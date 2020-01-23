@@ -23,17 +23,97 @@ log(add(2)(5))
 
 // a -> a
 const add1 = add(1)
+const add2 = add(2)
+log(add1(7), add2(7))
 
-log(add1(7))
+const compose = g => f => (...v) => g(f(...v))
+
+const add3 = compose(add1)(add2)
+const add4 = compose(add2)(add2)
+
+
+log(add3(3), add4(10))
+// add1(
+//   add2(
+//     3
+//   )
+// )
+
+
+
+
+
+
 
 
 
 /// part 1 ///
 // now that we know the rules, let's do a challenge
 // make an array with all numbers winthin a range
+// divide all numbers `n % 3 === 0` of them by 2
+// sum all of them
 
 const range = min => max => min <= max ? [min, ...range(min + 1)(max)] : []
 log(range(4)(18))
+
+// that's easy!
+log(
+  range(1)(5)
+    // looks weird, a repeats a lot and ternary is not very clean
+    .map(a => a % 3 === 0 ? a / 2 : a)
+    // looks like add
+    .reduce((b, a) => a + b)
+)
+
+// compose functions!!
+const ifElse1 = b => t => f => b ? t : f
+
+log(
+  range(1)(5)
+    // did not improve much, but now we can see an interesting pattern
+    // a in all of them, and in JS we can do `map(a => f(a))` into `map(f)`
+    .map(ifElse1(
+      a => a % 3 === 0
+    )(
+      a => a / 2
+    )(
+      identity
+    )
+    )
+    .reduce((b, a) => a + b)
+)
+
+
+const ifElse = b => t => f => a => b(a) ? t(a) : f(a)
+
+const uncurry = f => (a, b) => f(a)(b)
+const flip = f => a => b => f(b)(a)
+
+const eq = a => b => a === b
+const mod = a => b => a % b
+const div = a => b => a / b
+
+// const isMod = a => b => eq(0)(mod(a)(b)) // ??
+const isMod = a => compose(eq(0))(mod(a))
+const isMod3 = flip(isMod)(3)
+const div2 = flip(div)(2)
+
+log(
+  range(1)(5)
+    .map(ifElse(isMod3)(div2)(identity))
+    .reduce(uncurry(add))
+)
+
+
+
+
+
+
+
+
+
+
+
 
 // (a -> b) -> [a] -> [b]
 const map = f => ([head, ...tail]) => !!head ? [f(head), ...map(f)(tail)] : []
@@ -44,12 +124,16 @@ const reduce = fbab => b => ([head, ...tail]) => !!head ? reduce(fbab)(fbab(b)(h
 log(reduce(add)(0)([1, 2, 3, 4]))
 log(reduce(b => a => ({ ...b, [a]: 12 }))()([1, 2, 3, 4]))
 
-const compose = g => f => valor =>
-  g(
-    f(
-      valor
-    )
-  )
+
+
+
+
+
+
+
+
+
+
 
 // fizzbuzz
 // n % 3 == 0 -> fizz
