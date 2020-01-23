@@ -9,7 +9,7 @@
 
 
 /// part 0 ///
-const { log } = console
+const { log, warn } = console
 
 // simplest function
 // * -> *
@@ -100,8 +100,36 @@ const div2 = flip(div)(2)
 
 log(
   range(1)(5)
-    .map(ifElse(isMod3)(div2)(identity))
+    .map(
+      ifElse
+        (isMod3)
+        (div2)
+        (identity)
+    )
     .reduce(uncurry(add))
+)
+
+
+
+// (a -> b) -> [a] -> [b]
+const map = f => ([head, ...tail]) => !!head ? [f(head), ...map(f)(tail)] : []
+// arr.map(f) to map(f, arr)
+
+// (b -> a -> b) -> b -> [a] -> b
+const reduce = fbab => b => ([head, ...tail]) => !!head ? reduce(fbab)(fbab(b)(head))(tail) : b
+// arr.reduce(f, b) to reduce(f, b, arr)
+
+
+warn(
+  compose
+    (reduce(add)(0))
+    (map(
+      ifElse
+        (isMod3)
+        (div2)
+        (identity)
+    ))
+    (range(1)(5))
 )
 
 
@@ -111,15 +139,6 @@ log(
 
 
 
-
-
-
-
-// (a -> b) -> [a] -> [b]
-const map = f => ([head, ...tail]) => !!head ? [f(head), ...map(f)(tail)] : []
-
-// (b -> a -> b) -> b -> [a] -> b
-const reduce = fbab => b => ([head, ...tail]) => !!head ? reduce(fbab)(fbab(b)(head))(tail) : b
 
 log(reduce(add)(0)([1, 2, 3, 4]))
 log(reduce(b => a => ({ ...b, [a]: 12 }))()([1, 2, 3, 4]))
