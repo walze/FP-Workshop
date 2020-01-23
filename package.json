@@ -1,0 +1,22 @@
+{
+  "name": "fp-workshop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/walze/FP-Workshop.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/walze/FP-Workshop/issues"
+  },
+  "homepage": "https://github.com/walze/FP-Workshop#readme",
+  "dependencies": {
+    "parcel-bundler": "^1.12.4"
+  }
+}
