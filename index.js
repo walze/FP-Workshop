@@ -16,12 +16,11 @@ const { log, warn } = console
 const identity = _ => _
 
 // looks weird instead of `add(a, b)` but it has its benefits
-// a -> a -> a
 const add = a => b => a + b
 
 log(add(2)(5))
 
-// a -> a
+// partial application
 const add1 = add(1)
 const add2 = add(2)
 log(add1(7), add2(7))
@@ -111,70 +110,44 @@ log(
 
 
 
-// (a -> b) -> [a] -> [b]
+// arr.map(f) to map(f)(arr)
 const map = f => ([head, ...tail]) => !!head ? [f(head), ...map(f)(tail)] : []
-// arr.map(f) to map(f, arr)
 
-// (b -> a -> b) -> b -> [a] -> b
-const reduce = fbab => b => ([head, ...tail]) => !!head ? reduce(fbab)(fbab(b)(head))(tail) : b
-// arr.reduce(f, b) to reduce(f, b, arr)
+// arr.reduce(f, b) to reduce(f)(b)(arr)
+const reduce = f => b => ([head, ...tail]) => !!head ? reduce(f)(f(b)(head))(tail) : b
 
 
-warn(
-  compose
-    (reduce(add)(0))
-    (map(
-      ifElse
-        (isMod3)
-        (div2)
-        (identity)
-    ))
-    (range(1)(5))
-)
+const solve1 = compose
+  (reduce(add)(0))
+  (map(
+    ifElse
+      (isMod3)
+      (div2)
+      (identity)
+  ))
 
+log(solve1(range(1)(10)))
 
-
-
-
-
-
-
-
-log(reduce(add)(0)([1, 2, 3, 4]))
-log(reduce(b => a => ({ ...b, [a]: 12 }))()([1, 2, 3, 4]))
-
-
-
-
-
-
-
-
-
-
-
-
-// fizzbuzz
-// n % 3 == 0 -> fizz
-// n % 5 == 0 -> buzz
-// ambos -> fizzbuzz
-
-const fizzbuzz = n =>
-  (n % 3 === 0 ? 'fizz' : '') +
-  (n % 5 === 0 ? 'buzz' : '') ||
-  n
-
-const solve = map(fizzbuzz)
-
-log(solve(range(1)(100)))
 
 
 // part 3
 const fromEvent = (el, str) => fn => el.addEventListener(str, fn)
 
+const reduceRight = f => b => ([head, ...tail]) => !!head ? reduce(f)(f(head)(b))(tail) : b
+
+const pipe = (...fns) => reduceRight(compose)(identity)(fns)
+
 const merge = (...fns) => fn => map(f => f(fn))(fns)
 
 const $div = document.querySelector('div')
+
+
+warn(
+  pipe(
+    console.log,
+    x => x
+  )
+)
 
 merge(
   fromEvent($div, 'mouseup'),
