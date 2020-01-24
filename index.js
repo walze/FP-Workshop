@@ -130,29 +130,43 @@ log(solve1(range(1)(10)))
 
 
 
-// part 3
-const fromEvent = (el, str) => fn => el.addEventListener(str, fn)
+// part 3 drag and drop
+const fromEvent = el => str => fn => el.addEventListener(str, fn)
 
-const reduceRight = f => b => ([head, ...tail]) => !!head ? reduce(f)(f(head)(b))(tail) : b
-
-const pipe = (...fns) => reduceRight(compose)(identity)(fns)
+const pipe = (...fns) => fns.reduceRight(uncurry(compose))
 
 const merge = (...fns) => fn => map(f => f(fn))(fns)
 
 const $div = document.querySelector('div')
 
+const isDown = eq('mousedown')
+const isUp = eq('mouseup')
 
-warn(
-  pipe(
-    console.log,
-    x => x
-  )
-)
+// DMMMU
+const isDrag = str => prevIsDrag => isDown(str) || prevIsDrag && !isUp(str)
+
+const scan = f => b => {
+  let state = b
+
+  return a => (state = f(state)(a))
+}
 
 merge(
-  fromEvent($div, 'mouseup'),
-  fromEvent($div, 'mousedown'),
+  fromEvent(document)('mouseup'),
+  fromEvent($div)('mousedown'),
+  fromEvent(document)('mousemove'),
 )(pipe(
-  ({ x }) => x,
-  console.log
+  scan
+    (({ isDragging }) => event => ({
+      isDragging: isDrag(event.type)(isDragging),
+      event
+    }))({}),
+  ({ event, isDragging }) => {
+    if (!isDragging) return
+
+    const { x, y } = event
+
+    $div.style.left = `${x - $div.clientWidth / 2}px`
+    $div.style.top = `${y - $div.clientHeight / 2}px`
+  }
 ))
