@@ -156,17 +156,13 @@ merge(
   fromEvent($div)('mousedown'),
   fromEvent(document)('mousemove'),
 )(pipe(
-  scan
-    (({ isDragging }) => event => ({
-      isDragging: isDrag(event.type)(isDragging),
-      event
-    }))({}),
-  ({ event, isDragging }) => {
+  scan(([isDragging]) => event => [isDrag(event.type)(isDragging), event])([]),
+  ([isDragging, event]) => {
     if (!isDragging) return
 
     const { x, y } = event
 
     $div.style.left = `${x - $div.clientWidth / 2}px`
     $div.style.top = `${y - $div.clientHeight / 2}px`
-  }
-))
+  })
+)
