@@ -155,7 +155,7 @@ const thrower = a => { throw new TypeError(a) }
 
 const assert = f => m => ifElse(f)(identity)(_ => thrower(m))
 
-const fromDrag = merge(
+merge(
   fromEvent(document)('mouseup'),
   fromEvent($div)('mousedown'),
   fromEvent(document)('mousemove'),
@@ -163,11 +163,7 @@ const fromDrag = merge(
   scan(([isDragging]) => event => [isDrag(event.type)(isDragging), event])([]),
   assert(([isDragging]) => !!isDragging)('nao ta arrastando'),
   ([, e]) => e,
-  ([isDragging, event]) => {
-    if (!isDragging) return
-
-    const { x, y } = event
-
+  ({ x, y }) => {
     $div.style.left = `${x - $div.clientWidth / 2}px`
     $div.style.top = `${y - $div.clientHeight / 2}px`
   }
