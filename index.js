@@ -1,15 +1,28 @@
 // no loops
 // no ifs
 // function is a single return
-// no side-fx
+// no side-effects
 // no assignments in ƒunctions
 // only functions with 0 or 1 args
+// everything you do, has to use a function
 
 
+
+// sem loops
+// sim ifs
+// função tem que ser inline, sem blocos
+// Sem efeitos colaterais
+// nenhuma atribuição nas funções
+// apenas funciona com 0 ou 1 args
+// tudo o que você fizer, tem que usar uma função
 
 
 /// part 0 ///
 const { log, warn } = console
+
+// bem parecido com f :: a -> b
+const f = a => b
+
 
 // simplest function
 // * -> *
@@ -143,7 +156,7 @@ const isDown = eq('mousedown')
 const isUp = eq('mouseup')
 
 // DMMMU
-const isDrag = str => prevIsDrag => isDown(str) || prevIsDrag && !isUp(str)
+const isDrag = prevIsDrag => str => isDown(str) || prevIsDrag && !isUp(str)
 
 const scan = f => b => {
   let state = b
@@ -151,20 +164,27 @@ const scan = f => b => {
   return a => (state = f(state)(a))
 }
 
-const thrower = a => { throw new TypeError(a) }
-
-const assert = f => m => ifElse(f)(identity)(_ => thrower(m))
+const updateElPos = el => ({ x, y }) => {
+  el.style.left = `${x - el.clientWidth / 2}px`
+  el.style.top = `${y - el.clientHeight / 2}px`
+}
 
 merge(
   fromEvent(document)('mouseup'),
   fromEvent($div)('mousedown'),
   fromEvent(document)('mousemove'),
 )(pipe(
-  scan(([isDragging]) => event => [isDrag(event.type)(isDragging), event])([]),
-  assert(([isDragging]) => !!isDragging)('nao ta arrastando'),
-  ([, e]) => e,
-  ({ x, y }) => {
-    $div.style.left = `${x - $div.clientWidth / 2}px`
-    $div.style.top = `${y - $div.clientHeight / 2}px`
-  }
+  // scan(boolOrEvent => event => isDrag(!!boolOrEvent)(event.type) && event)(false),
+  scan
+    (boolOrEvent =>
+      ifElse
+        (e => isDrag(!!boolOrEvent)(e.type))
+        (identity)
+        (_ => false)
+    )
+    (false),
+  ifElse
+    (Boolean)
+    (updateElPos($div))
+    (identity),
 ))
