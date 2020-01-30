@@ -16,12 +16,12 @@ fromEvent($input, 'input')
     map(e => e.target.value),
     flatMap(n => API('/users/' + n)),
     flatMap(p => Promise.all([p.json(), p])),
-    map(([{ data }, r]) => [data, r]),
+    map(([{ data }, { status }]) => [data, status]),
   )
   .subscribe(pipe(
     either(
       nth(0),
-      pipe(nth(1), e => e.status, tap(console.error))
+      pipe(nth(1), tap(console.error))
     ),
 
     compose(setInnerHTML($fetch), JSON.stringify)
