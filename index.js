@@ -5,7 +5,7 @@
 // no assignments in ƒunctions
 // only functions with 0 or 1 args
 // everything you do, has to use a function
-
+// no async
 
 
 // sem loops
@@ -15,13 +15,14 @@
 // nenhuma atribuição nas funções
 // apenas funciona com 0 ou 1 args
 // tudo o que você fizer, tem que usar uma função
+// sem async
 
 
 /// part 0 ///
-const { log, warn } = console
+const { warn, log } = console
 
 // bem parecido com f :: a -> b
-const f = a => b
+const ƒ = a => b
 
 
 // simplest function
@@ -71,7 +72,7 @@ log(range(4)(18))
 // that's easy!
 log(
   range(1)(5)
-    // looks weird, a repeats a lot and ternary is not very clean
+    // looks weird, 'a' repeats a lot and ternary is not very clean
     .map(a => a % 3 === 0 ? a / 2 : a)
     // looks like add
     .reduce((b, a) => a + b)
@@ -188,3 +189,5 @@ merge(
     (updateElPos($div))
     (identity),
 ))
+
+

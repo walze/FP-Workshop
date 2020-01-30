@@ -8,21 +8,30 @@
   <title>Document</title>
 
   <style>
-    div {
+    #drag {
       width: 100px;
       height: 100px;
+
+      position: absolute;
+      left: 50%;
 
       background-color: brown;
     }
   </style>
 
   <script src="./index.js" defer></script>
+  <script src="./fetch.js" defer></script>
 </head>
 
 <body>
 
-  <div style="position: absolute;"></div>
+  <div id="drag"></div>
 
+
+  <div>
+    <code id="fetch"></code>
+    <input>
+  </div>
 </body>
 
 </html>
