@@ -6,8 +6,6 @@ const API = url => fetch('https://reqres.in/api' + url)
 
 const setInnerHTML = el => str => el.innerHTML = str
 
-const thrower = a => b => { throw new Error([a, b]) }
-
 // part 4
 const $input = document.querySelector('input')
 const $fetch = document.querySelector('#fetch')
