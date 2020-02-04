@@ -29,6 +29,7 @@ const ƒ = a => b
 // * -> *
 const identity = _ => _
 
+// currying
 // looks weird instead of `add(a, b)` but it has its benefits
 const add = a => b => a + b
 
@@ -71,29 +72,29 @@ log(range(4)(18))
 
 // that's easy!
 log(
-  range(1)(5)
+  'resposta 1',
+  range(1)(10)
     // looks weird, 'a' repeats a lot and ternary is not very clean
-    .map(a => a % 3 === 0 ? a / 2 : a)
-    // looks like add
-    .reduce((b, a) => a + b)
+    .map(a => a % 5 === 0 ? a / 2 : a)
+  // looks like add
+  // .reduce((b, a) => a + b)
 )
 
 // compose functions!!
 const ifElse1 = b => t => f => b ? t : f
 
 log(
-  range(1)(5)
+  'resposta 2',
+  range(1)(10)
     // did not improve much, but now we can see an interesting pattern
     // a in all of them, and in JS we can do `map(a => f(a))` into `map(f)`
-    .map(ifElse1(
-      a => a % 3 === 0
-    )(
-      a => a / 2
-    )(
-      identity
+    .map(
+      ifElse1
+        (a => a % 5 === 0)
+        (a => a / 2)
+        (identity)
     )
-    )
-    .reduce((b, a) => a + b)
+  // .reduce((b, a) => a + b)
 )
 
 
@@ -106,16 +107,20 @@ const eq = a => b => a === b
 const mod = a => b => a % b
 const div = a => b => a / b
 
-// const isMod = a => b => eq(0)(mod(a)(b)) // ??
-const isMod = a => compose(eq(0))(mod(a))
-const isMod3 = flip(isMod)(3)
+const compose2 = compose(compose)(compose)
+
+const __isMod = a => b => eq(0)(mod(a)(b))
+const _isMod = x => compose2(eq(0))(mod)(x)
+const isMod = compose2(eq(0))(mod)
+const isMod5 = flip(isMod)(5)
 const div2 = flip(div)(2)
 
 log(
-  range(1)(5)
+  'resposta 3',
+  range(1)(10)
     .map(
       ifElse
-        (isMod3)
+        (isMod5)
         (div2)
         (identity)
     )
@@ -125,17 +130,17 @@ log(
 
 
 // arr.map(f) to map(f)(arr)
-const map = f => ([head, ...tail]) => !!head ? [f(head), ...map(f)(tail)] : []
+const map = f => arr => arr.map(f)
 
 // arr.reduce(f, b) to reduce(f)(b)(arr)
-const reduce = f => b => ([head, ...tail]) => !!head ? reduce(f)(f(b)(head))(tail) : b
+const reduce = f => b => arr => arr.reduce(f, b)
 
 
 const solve1 = compose
   (reduce(add)(0))
   (map(
     ifElse
-      (isMod3)
+      (isMod5)
       (div2)
       (identity)
   ))
@@ -181,8 +186,7 @@ merge(
       ifElse
         (e => isDrag(!!boolOrEvent)(e.type))
         (identity)
-        (_ => false)
-    )
+        (_ => false))
     (false),
   ifElse
     (Boolean)
