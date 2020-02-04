@@ -107,6 +107,15 @@ const eq = a => b => a === b
 const mod = a => b => a % b
 const div = a => b => a / b
 
+// compose (b -> c) -> (a -> b) -> a -> c
+// compose(compose) (a1 -> b -> c) -> a1 -> (a2 -> b) -> a2 -> c
+// compose(compose)(compose) (b -> c) -> (a1 -> a2 -> b) -> a1 -> a2 -> c
+
+// const c = compose(compose)
+// warn(
+//   c(add)(1)(add(1))(1)
+// )
+
 const compose2 = compose(compose)(compose)
 
 const __isMod = a => b => eq(0)(mod(a)(b))
