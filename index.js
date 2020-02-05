@@ -22,7 +22,7 @@
 const { warn, log } = console
 
 // bem parecido com f :: a -> b
-const ƒ = a => b
+const ƒ = a => a
 
 
 // simplest function
@@ -32,6 +32,9 @@ const identity = _ => _
 // currying
 // looks weird instead of `add(a, b)` but it has its benefits
 const add = a => b => a + b
+const eq = a => b => a === b
+const mod = a => b => a % b
+const div = a => b => a / b
 
 log(add(2)(5))
 
@@ -76,12 +79,12 @@ log(
   range(1)(10)
     // looks weird, 'a' repeats a lot and ternary is not very clean
     .map(a => a % 5 === 0 ? a / 2 : a)
-  // looks like add
-  // .reduce((b, a) => a + b)
+    // looks like add
+    .reduce((b, a) => a + b)
 )
 
 // compose functions!!
-const ifElse1 = b => t => f => b ? t : f
+const ifElse = b => t => f => a => b(a) ? t(a) : f(a)
 
 log(
   'resposta 2',
@@ -89,37 +92,31 @@ log(
     // did not improve much, but now we can see an interesting pattern
     // a in all of them, and in JS we can do `map(a => f(a))` into `map(f)`
     .map(
-      ifElse1
+      ifElse
         (a => a % 5 === 0)
         (a => a / 2)
         (identity)
     )
-  // .reduce((b, a) => a + b)
+    .reduce((b, a) => a + b)
 )
 
-
-const ifElse = b => t => f => a => b(a) ? t(a) : f(a)
 
 const uncurry = f => (a, b) => f(a)(b)
 const flip = f => a => b => f(b)(a)
 
-const eq = a => b => a === b
-const mod = a => b => a % b
-const div = a => b => a / b
-
 // compose (b -> c) -> (a -> b) -> a -> c
+
 // compose(compose) (a1 -> b -> c) -> a1 -> (a2 -> b) -> a2 -> c
+log('compose compose', compose(compose)(add)(1)(add(1))(1))
+
 // compose(compose)(compose) (b -> c) -> (a1 -> a2 -> b) -> a1 -> a2 -> c
-
-// const c = compose(compose)
-// warn(
-//   c(add)(1)(add(1))(1)
-// )
-
 const compose2 = compose(compose)(compose)
 
 const __isMod = a => b => eq(0)(mod(a)(b))
 const _isMod = x => compose2(eq(0))(mod)(x)
+// x -> mod -> modx -> eq0 -> modxeq0
+
+
 const isMod = compose2(eq(0))(mod)
 const isMod5 = flip(isMod)(5)
 const div2 = flip(div)(2)
@@ -142,11 +139,11 @@ log(
 const map = f => arr => arr.map(f)
 
 // arr.reduce(f, b) to reduce(f)(b)(arr)
-const reduce = f => b => arr => arr.reduce(f, b)
+const foldl = f => b => arr => arr.reduce(f, b)
 
 
-const solve1 = compose
-  (reduce(add)(0))
+const solve = compose
+  (foldl(add)(0))
   (map(
     ifElse
       (isMod5)
@@ -154,7 +151,7 @@ const solve1 = compose
       (identity)
   ))
 
-log(solve1(range(1)(10)))
+log(solve(range(1)(10)))
 
 
 
