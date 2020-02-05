@@ -199,5 +199,3 @@ merge(
     (updateElPos($div))
     (identity),
 ))
-
-

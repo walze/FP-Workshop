@@ -1,6 +1,6 @@
-import { fromEvent, interval } from "rxjs"
-import { map, flatMap, debounce } from "rxjs/operators"
-import { pipe, compose, tap, nth, either } from "ramda"
+import { fromEvent, interval } from 'rxjs'
+import { map, flatMap, debounce } from 'rxjs/operators'
+import { pipe, compose, tap, nth, either } from 'ramda'
 
 const API = url => fetch('https://reqres.in/api' + url)
 
