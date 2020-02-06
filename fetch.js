@@ -4,7 +4,7 @@ import { pipe, compose, tap, nth, either } from 'ramda'
 
 const API = url => fetch('https://reqres.in/api' + url)
 
-const setInnerHTML = el => str => el.innerHTML = str
+const setInnerHTML = el => str => (el.innerHTML = str)
 
 // part 4
 const $input = document.querySelector('input')
